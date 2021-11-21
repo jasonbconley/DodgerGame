@@ -5,6 +5,14 @@ TagManager:
   serializedVersion: 2
   tags:
   - 2DInput
+  - BallSpawn
+  - Volleyball
+  - Floor
+  - hidden
+  - UICanvas
+  - Timer
+  - PlayerScore
+  - EnemyScore
   layers:
   - Default
   - TransparentFX
@@ -12,7 +20,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Floor
   - 
   - 
   - 

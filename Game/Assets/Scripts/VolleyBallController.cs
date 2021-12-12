@@ -10,9 +10,12 @@ public class VolleyBallController : MonoBehaviour
     public float FiveSeconds = 5;
     public UnityEngine.UI.Text Timer;
     bool runTimer = false;
-    bool grounded = false;
+    public static bool grounded = false;
+    public static bool infiniteArms = false;
     bool playerTouch = false;
     bool enemyTouch = false;
+    public Transform spikeAim;
+    public static bool disable = false;
 
     // Code used from https://www.youtube.com/watch?v=1Srb6r5Kle4
 
@@ -25,10 +28,19 @@ public class VolleyBallController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("space"))
+        if (Input.GetKeyDown(KeyCode.F) && !playerJump.grounded)
+        {
+            TryHitSpike();
+        }
+        else if (Input.GetKeyDown(KeyCode.E)) 
+        {
+            TryHitBump();
+        }
+        else if (Input.GetKeyDown(KeyCode.F))
         {
             TryHitBall();
         }
+
         if (runTimer) // https://www.youtube.com/watch?v=GPwp0Bd7WnA
         {
             if (FiveSeconds > 0)
@@ -44,6 +56,11 @@ public class VolleyBallController : MonoBehaviour
             runTimer = false;
             Timer.text = "";
             FiveSeconds = 5;
+        }
+
+        if (disable)
+        {
+            this.gameObject.GetComponent<VolleyBallController>().enabled = false;
         }
     }
 
@@ -91,6 +108,11 @@ public class VolleyBallController : MonoBehaviour
             runTimer = true;
             Spawn();
         }
+        else if (collision.gameObject.name == "EnemyBack" || collision.gameObject.name == "EnemyFront")
+        {
+            enemyTouch = true;
+            GetComponent<Rigidbody>().AddForce(new Vector3(0, -5, 5) + spawn.position, ForceMode.Impulse);
+        }
     }
 
     private void TryHitBall()
@@ -104,6 +126,28 @@ public class VolleyBallController : MonoBehaviour
         }
     }
 
+    private void TryHitBump()
+    {
+        float power = GetPower();
+        if (power > 0 && !grounded)
+        {
+            playerTouch = true;
+            Rigidbody rb = GetComponent<Rigidbody>();
+            rb.AddForce((Vector3.up * power * 1.5f) + Vector3.forward + Vector3.up, ForceMode.Impulse);
+        }
+    }
+
+    private void TryHitSpike()
+    {
+        float power = GetPower();
+        if (power > 0 && !grounded)
+        {
+            playerTouch = true;
+            Rigidbody rb = GetComponent<Rigidbody>();
+            rb.velocity = Spike() * power * 2;
+        }
+    }
+
     private Vector3 GetReflected()
     {
         Vector3 volleyBallVector = GameObject.FindGameObjectWithTag("Player").transform.position - transform.position;
@@ -113,8 +157,18 @@ public class VolleyBallController : MonoBehaviour
         return reflected.normalized;
     }
 
+    private Vector3 Spike()
+    {
+        return spikeAim.position.normalized;
+    }
+
     private float GetPower()
     {
+        if (infiniteArms)
+        {
+            return 10;
+        }
+
         float ideal = 3;
         float maxPower = 15;
 
@@ -133,8 +187,10 @@ public class VolleyBallController : MonoBehaviour
         {
             transform.position = spawn.position;
         }
-        GetComponent<Rigidbody>().velocity = new Vector3(0, 5, -5);
+        GetComponent<Rigidbody>().velocity = new Vector3(0, 3, -3);
         isSpawning = false;
         grounded = false;
+        enemyTouch = false;
+        playerTouch = false;
     }
 }

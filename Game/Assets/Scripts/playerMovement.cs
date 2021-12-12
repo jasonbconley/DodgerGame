@@ -8,6 +8,8 @@ public class playerMovement : MonoBehaviour
     Animator animator;
     Vector3 move;
     Rigidbody rb;
+    float jump = 10;
+    public static bool disable = false;
 
     // Using code from https://www.youtube.com/watch?v=_QajrabyTJc
 
@@ -22,9 +24,12 @@ public class playerMovement : MonoBehaviour
 
     }
 
-    public void Update()
+    void Update()
     {
-
+        if (disable)
+        {
+            this.gameObject.GetComponent<playerMovement>().enabled = false;
+        }
     }
     private void FixedUpdate()
     {

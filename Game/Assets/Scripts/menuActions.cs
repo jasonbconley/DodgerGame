@@ -10,6 +10,11 @@ public class menuActions : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
+    public void SetArms()
+    {
+        VolleyBallController.infiniteArms = true;
+    }
+
     public void QuitGame()
     {
         Application.Quit();

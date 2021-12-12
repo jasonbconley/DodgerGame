@@ -27,6 +27,10 @@ public class PlayerScoreBoard : MonoBehaviour
         int currScore = int.Parse(score.text);
         currScore += 1;
         score.text = currScore.ToString();
+        if (currScore >= 25)
+        {
+            GameOver.playerWon = true;
+        }
         collided = false;
     }
 }
